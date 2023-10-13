@@ -59,7 +59,7 @@ func DeleteData(c echo.Context) error {
 }
 func DataNotFound(c echo.Context) error {
 	var err Err
-	err.Code = 400
+	err.Code = 200
 	err.Message = "data not found"
 	err.Errors = nil
 	return c.JSON(err.Code, err)

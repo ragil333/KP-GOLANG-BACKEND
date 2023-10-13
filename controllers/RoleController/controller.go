@@ -35,7 +35,7 @@ func Show(c echo.Context) error {
 	id := c.Param("id")
 	result, err := RoleRepo.Show(id)
 	if err != nil {
-		return helpers.ClientErrors(c, err)
+		return helpers.DataNotFound(c)
 	}
 	return helpers.FetchData(c, result)
 }

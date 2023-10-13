@@ -28,30 +28,25 @@ func Store(c echo.Context) error {
 	return helpers.CreateData(c, &result)
 }
 func Index(c echo.Context) error {
-	var category []models.Category
-	err := helpers.DB.Find(&category).Error
+	result, err := CategoryRepo.Index()
 	if err != nil {
-		return helpers.DataNotFound(c)
+		helpers.ClientErrors(c, err)
 	}
-	return helpers.FetchData(c, category)
+	return helpers.FetchData(c, result)
 }
 func Show(c echo.Context) error {
 	id := c.Param("id")
-	var category models.Category
-	if err := helpers.DB.Where("category_id=?", id).First(&category).Error; err != nil {
-		return helpers.DataNotFound(c)
-
+	result, err := CategoryRepo.Show(id)
+	if err != nil {
+		return helpers.ClientErrors(c, err)
 	}
-	return helpers.FetchData(c, category)
+	return helpers.FetchData(c, result)
 }
 func Destroy(c echo.Context) error {
 	id := c.Param("id")
-	var category models.Category
-	err := helpers.DB.Where("category_id=?", id).First(&category).Error
-	if err != nil {
-		return helpers.DataNotFound(c)
+	if err := CategoryRepo.Destroy(id); err != nil {
+		return helpers.ClientErrors(c, err)
 	}
-	helpers.DB.Delete(&category)
 	return helpers.DeleteData(c)
 }
 func Update(c echo.Context) error {
@@ -64,10 +59,9 @@ func Update(c echo.Context) error {
 	if err := v.Struct(&data); err != nil {
 		return helpers.ValidationErrors(c, err.Error())
 	}
-	var category models.Category
-	if err := helpers.DB.Where("category_id = ?", id).First(&category).Error; err != nil {
-		return helpers.DataNotFound(c)
+	result, err := CategoryRepo.Update(data, id)
+	if err != nil {
+		return helpers.ClientErrors(c, err)
 	}
-	helpers.DB.Model(&category).Updates(&data)
-	return helpers.UpdateData(c, &category)
+	return helpers.UpdateData(c, &result)
 }
