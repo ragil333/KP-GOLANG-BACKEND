@@ -3,6 +3,7 @@ package RoleController
 import (
 	"kp-elibrary-golang/helpers"
 	"kp-elibrary-golang/models"
+	"kp-elibrary-golang/respositories/RoleRepo"
 	"net/http"
 
 	"github.com/go-playground/validator"
@@ -17,16 +18,19 @@ func Store(c echo.Context) error {
 	if err := helpers.Validation(role); err != nil {
 		return helpers.ValidationErrors(c, err)
 	}
-	helpers.DB.Create(&role)
-	return helpers.CreateData(c, &role)
+	result, err := RoleRepo.Store(&role)
+	if err != nil {
+		return helpers.ClientErrors(c, err)
+	}
+	return helpers.CreateData(c, &result)
 }
 func Index(c echo.Context) error {
-	var category []models.Role
-	err := helpers.DB.Find(&category).Error
+	var role []models.Role
+	result, err := RoleRepo.Index(role)
 	if err != nil {
-		return helpers.DataNotFound(c)
+		return helpers.ClientErrors(c, err)
 	}
-	return helpers.FetchData(c, category)
+	return helpers.FetchData(c, result)
 }
 func Show(c echo.Context) error {
 	id := c.Param("id")
