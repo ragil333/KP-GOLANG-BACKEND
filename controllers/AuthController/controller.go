@@ -1,4 +1,4 @@
-package controllers
+package AuthController
 
 import (
 	"kp-elibrary-golang/helpers"

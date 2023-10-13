@@ -1,4 +1,4 @@
-package controllers
+package RoleController
 
 import (
 	"kp-elibrary-golang/helpers"
@@ -6,24 +6,21 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator"
-	"github.com/google/uuid"
 	"github.com/labstack/echo"
 )
 
-func StoreRole(c echo.Context) error {
+func Store(c echo.Context) error {
 	var role models.Role
-	// v := validator.New()
 	if err := c.Bind(&role); err != nil {
 		return helpers.ClientErrors(c, err.Error())
 	}
 	if err := helpers.Validation(role); err != nil {
 		return helpers.ValidationErrors(c, err)
 	}
-	role.RoleId = uuid.New()
 	helpers.DB.Create(&role)
 	return helpers.CreateData(c, &role)
 }
-func AllRole(c echo.Context) error {
+func Index(c echo.Context) error {
 	var category []models.Role
 	err := helpers.DB.Find(&category).Error
 	if err != nil {
@@ -31,7 +28,7 @@ func AllRole(c echo.Context) error {
 	}
 	return helpers.FetchData(c, category)
 }
-func ShowRole(c echo.Context) error {
+func Show(c echo.Context) error {
 	id := c.Param("id")
 	var category models.Role
 	if err := helpers.DB.Where("role_id=?", id).First(&category).Error; err != nil {
@@ -40,7 +37,7 @@ func ShowRole(c echo.Context) error {
 	}
 	return helpers.FetchData(c, category)
 }
-func DestroyRole(c echo.Context) error {
+func Destroy(c echo.Context) error {
 	id := c.Param("id")
 	var category models.Role
 	err := helpers.DB.Where("role_id=?", id).First(&category).Error
@@ -50,7 +47,7 @@ func DestroyRole(c echo.Context) error {
 	helpers.DB.Delete(&category)
 	return helpers.DeleteData(c)
 }
-func UpdateRole(c echo.Context) error {
+func Update(c echo.Context) error {
 	var data models.Role
 	id := c.Param("id")
 	v := validator.New()

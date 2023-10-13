@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator"
-	"github.com/google/uuid"
 	"github.com/labstack/echo"
 )
 
@@ -19,7 +18,6 @@ func StoreCategory(c echo.Context) error {
 	if err := helpers.Validation(category); err != nil {
 		return helpers.ValidationErrors(c, err)
 	}
-	category.CategoryId = uuid.New()
 	helpers.DB.Create(&category)
 	return helpers.CreateData(c, &category)
 }

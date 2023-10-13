@@ -16,6 +16,6 @@ func Initialize() {
 	if err != nil {
 		panic(err.Error())
 	}
-	db.AutoMigrate(&models.Role{}, &models.User{}, &models.Category{}, &models.Book{}, &models.BookCategory{})
+	db.AutoMigrate(&models.User{}, &models.BookCategory{}, &models.Role{}, &models.Book{}, &models.Category{})
 	DB = db
 }
