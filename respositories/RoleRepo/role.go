@@ -5,7 +5,8 @@ import (
 	"kp-elibrary-golang/models"
 )
 
-func Index(role []models.Role) ([]models.Role, error) {
+func Index() ([]models.Role, error) {
+	var role []models.Role
 	result := helpers.DB.Preload("User").Find(&role)
 	if result.Error != nil {
 		return nil, result.Error
@@ -19,12 +20,29 @@ func Store(role *models.Role) (*models.Role, error) {
 	}
 	return role, nil
 }
-func Show() {
-
+func Show(id any) (*models.Role, error) {
+	var role models.Role
+	result := helpers.DB.Where("role_id=?", id).First(&role)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &role, nil
 }
-func Update() {
-
+func Update(data *models.Role, id any) (*models.Role, error) {
+	var role models.Role
+	result := helpers.DB.Where("role_id = ?", id).First(&role)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	helpers.DB.Model(&role).Updates(&data)
+	return data, nil
 }
-func Destroy() {
-
+func Destroy(id any) error {
+	var role models.Role
+	err := helpers.DB.Where("role_id=?", id).First(&role).Error
+	if err != nil {
+		return err
+	}
+	helpers.DB.Delete(&role)
+	return nil
 }

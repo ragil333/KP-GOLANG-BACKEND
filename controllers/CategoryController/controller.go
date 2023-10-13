@@ -1,15 +1,16 @@
-package controllers
+package CategoryController
 
 import (
 	"kp-elibrary-golang/helpers"
 	"kp-elibrary-golang/models"
+	"kp-elibrary-golang/respositories/CategoryRepo"
 	"net/http"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
 )
 
-func StoreCategory(c echo.Context) error {
+func Store(c echo.Context) error {
 
 	var category models.Category
 	if err := c.Bind(&category); err != nil {
@@ -18,10 +19,15 @@ func StoreCategory(c echo.Context) error {
 	if err := helpers.Validation(category); err != nil {
 		return helpers.ValidationErrors(c, err)
 	}
-	helpers.DB.Create(&category)
-	return helpers.CreateData(c, &category)
+
+	result, err := CategoryRepo.Store(&category)
+	if err != nil {
+		return helpers.ClientErrors(c, err)
+	}
+
+	return helpers.CreateData(c, &result)
 }
-func AllCategory(c echo.Context) error {
+func Index(c echo.Context) error {
 	var category []models.Category
 	err := helpers.DB.Find(&category).Error
 	if err != nil {
@@ -29,7 +35,7 @@ func AllCategory(c echo.Context) error {
 	}
 	return helpers.FetchData(c, category)
 }
-func ShowCategory(c echo.Context) error {
+func Show(c echo.Context) error {
 	id := c.Param("id")
 	var category models.Category
 	if err := helpers.DB.Where("category_id=?", id).First(&category).Error; err != nil {
@@ -38,7 +44,7 @@ func ShowCategory(c echo.Context) error {
 	}
 	return helpers.FetchData(c, category)
 }
-func DestroyCategory(c echo.Context) error {
+func Destroy(c echo.Context) error {
 	id := c.Param("id")
 	var category models.Category
 	err := helpers.DB.Where("category_id=?", id).First(&category).Error
@@ -48,7 +54,7 @@ func DestroyCategory(c echo.Context) error {
 	helpers.DB.Delete(&category)
 	return helpers.DeleteData(c)
 }
-func UpdateCategory(c echo.Context) error {
+func Update(c echo.Context) error {
 	var data models.Category
 	id := c.Param("id")
 	v := validator.New()
