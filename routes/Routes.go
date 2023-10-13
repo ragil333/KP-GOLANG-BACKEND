@@ -27,5 +27,6 @@ func Initialize() {
 
 	RoleRoutes(g)
 	CategoryRoutes(g)
+	BookRoutes(g)
 	e.Logger.Fatal(e.Start(":8000"))
 }
